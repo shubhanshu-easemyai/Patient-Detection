@@ -1,6 +1,6 @@
-<!-- "app_data": {
+"app_data": {
      "$oid": "6629f1da78337590ad14dd51"
-}, make this app_data Object_id equal to the app_data of the app in widget_management_db.app_configuration_settings  -->
+}, make this app_data Object_id equal to the app_data of the app in widget_management_db.app_configuration_settings 
 
 [{
     "_id": {
