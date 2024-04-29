@@ -10,7 +10,7 @@ class EncyptionHandler:
         if "SERVICE_SECRET_KEY" in envs and envs["SERVICE_SECRET_KEY"]:
             self.encyption_key = envs["SERVICE_SECRET_KEY"]
             self.fernet = Fernet(self.encyption_key)
-            env_reader.remove("SERVICE_SECRET_KEY")
+            # env_reader.remove("SERVICE_SECRET_KEY")
         del envs
 
     def decrypt(self, data: str) -> dict:

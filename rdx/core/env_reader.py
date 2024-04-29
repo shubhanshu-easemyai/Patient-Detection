@@ -23,7 +23,7 @@ class EnvReader:
                 pass
             if key.find("RDX") != -1:
                 self.envs.update({key.split("RDX_")[-1]: val})
-                del os.environ[key]
+                # del os.environ[key]
 
     def get(self):
         return self.envs

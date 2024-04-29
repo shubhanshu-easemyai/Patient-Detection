@@ -44,9 +44,14 @@ class Connector:
         return produce_data_object(topic=topic, partition=partition, offset=offset)
 
     def run(self):
-        threading.Thread(
-            target=getattr(self.connection_handler_cls_obj, "consume_data"),
-        ).start()
+        self.main_tread = threading.Thread(
+            target=getattr(self.connection_handler_cls_obj, "consume_data"), daemon=True
+            
+        )
+        self.main_tread.start()
+    
+    def stop(self):
+        self.main_tread.join()
 
     def consume_data(self, func):
         @functools.wraps(func)
@@ -54,7 +59,7 @@ class Connector:
             while not message_queue.empty() or message_queue.qsize != 0:
                 func(message_queue.get(), *args, **kwargs)
 
-        threading.Thread(target=wrapper).start()
+        threading.Thread(target=wrapper, daemon=True).start()
 
     def consume_events(self, func):
         @functools.wraps(func)
@@ -62,4 +67,4 @@ class Connector:
             while not event_queue.empty() or event_queue.qsize != 0:
                 func(event_queue.get(), *args, **kwargs)
 
-        threading.Thread(target=wrapper).start()
+        threading.Thread(target=wrapper, daemon=True).start()

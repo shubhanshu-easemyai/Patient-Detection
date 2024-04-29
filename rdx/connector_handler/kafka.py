@@ -27,7 +27,7 @@ class ConnectionHandler(KafkaProducerHandler):
         for key, val in envs.items():
             if key in self.configurations:
                 self.configurations[key] = val
-                env_reader.remove(env_name=key)
+                # env_reader.remove(env_name=key)
 
         self.configurations["SERVICE_NAME"] = copy.deepcopy(envs["SERVICE_NAME"])
         self.configurations["SERVICE_CATEGORY"] = copy.deepcopy(
@@ -50,19 +50,3 @@ class ConnectionHandler(KafkaProducerHandler):
         return super().produce_data(
             key, value, headers, transaction_id, event_type, destination
         )
-
-    # def produce_data(
-    #     self,
-    #     key,
-    #     value,
-    #     headers: dict = None,
-    #     transaction_id: str = None,
-    #     event_type: str = None,
-    #     destination: str = None,
-    # ):
-    #     if headers is None:
-    #         headers = {}
-    #     return super().produce_data(
-    #         key, value, headers, transaction_id, event_type, destination
-    #     )
-

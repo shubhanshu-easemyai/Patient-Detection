@@ -28,7 +28,7 @@ class KafkaConsumerHandler:
             "sasl.username": kwargs["KAFKA_SASL_USERNAME"],
             "sasl.password": kwargs["KAFKA_SASL_PASSWORD"],
             "sasl.mechanism": kwargs["KAFKA_SASL_MECHANISM"],
-            "auto.offset.reset": kwargs["KAFKA_AUTO_OFFSET_RESET"],
+            "auto.offset.reset": "latest",
             "group.id": kwargs["KAFKA_CONSUMER_GROUP"],
             "session.timeout.ms": 10000,
             "enable.auto.commit": False,
@@ -63,7 +63,7 @@ class KafkaConsumerHandler:
                 kwargs={
                     "thread_name": self.common_communication_topic,
                     "thread_partition": None,
-                },
+                }, daemon=True
             ).start()
 
         if self.intra_app_communication_topic:
@@ -72,7 +72,7 @@ class KafkaConsumerHandler:
                 kwargs={
                     "thread_name": self.intra_app_communication_topic,
                     "thread_partition": None,
-                },
+                }, daemon=True
             ).start()
 
         if self.consumer_producer_topic_partition_mapping:
@@ -86,7 +86,7 @@ class KafkaConsumerHandler:
                             kwargs={
                                 "thread_name": topic_name,
                                 "thread_partition": int(partition),
-                            },
+                            }, daemon=True
                         ).start()
                 else:
                     threading.Thread(
@@ -94,7 +94,7 @@ class KafkaConsumerHandler:
                         kwargs={
                             "thread_name": topic_name,
                             "thread_partition": None,
-                        },
+                        }, daemon=True
                     ).start()
 
     def consume_from_source(self, topic, partition, offset):

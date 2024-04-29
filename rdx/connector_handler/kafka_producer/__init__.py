@@ -95,23 +95,24 @@ class KafkaProducerHandler(KafkaConsumerHandler):
             "partition": int(partition) if partition else 0,
             "offset": offset,
         }
-
-        if data["headers"] is None:
-            data["headers"] = [(
-                    "{}_produce_time".format(self.service_name),
-                    datetime.datetime.now()
-                    .strftime("%d-%m-%Y %H:%M:%S.%f")
-                    .encode("utf-8"),
-                )]
-        else:
-            data["headers"].append(
-                (
-                    "{}_produce_time".format(self.service_name),
-                    datetime.datetime.now()
-                    .strftime("%d-%m-%Y %H:%M:%S.%f")
-                    .encode("utf-8"),
-                )
-            )
+        # if data["headers"]:
+        #     data["headers"].append(
+        #         (
+        #             "{}_produce_time".format(self.service_name),
+        #             datetime.datetime.now()
+        #             .strftime("%d-%m-%Y %H:%M:%S.%f")
+        #             .encode("utf-8"),
+        #         )
+        #     )
+        # else:
+        #     data["headers"] = [
+        #         (
+        #             "{}_produce_time".format(self.service_name),
+        #             datetime.datetime.now()
+        #             .strftime("%d-%m-%Y %H:%M:%S.%f")
+        #             .encode("utf-8"),
+        #         )
+        #     ]
         data["value"] = json.dumps(data["value"])
         if partition:
             self.producer.produce(topic=topic, partition=int(partition), **data)
@@ -148,16 +149,16 @@ class KafkaProducerHandler(KafkaConsumerHandler):
             data_keys = list(params["value"]["data"].keys())
             for key in data_keys:
                 if key.find("_buffer_") != -1:
-                    params["value"]["data"][
-                        key.replace("id", "details")
-                    ] = encryption_handler.decrypt(params["value"]["data"].pop(key))
+                    params["value"]["data"][key.replace("id", "details")] = (
+                        encryption_handler.decrypt(params["value"]["data"].pop(key))
+                    )
 
         if headers and type(headers) == dict:
             for k, v in headers.items():
                 headers_tuples_array.append(
                     (k, str(v) if type(v) != dict else json.dumps(v))
-            )
-        params["headers"] = headers_tuples_array
+                )
+            params["headers"] = headers_tuples_array
 
         if event_type:
             if event_type == "alert":
@@ -176,13 +177,13 @@ class KafkaProducerHandler(KafkaConsumerHandler):
                             and app["app_name"] != self.service_name
                         ):
                             params["value"]["destination"] = app["topic_name"]
-                            params["value"]["data"][
-                                "func_kwargs"
-                            ] = encryption_handler.custom_data_encrypt(
-                                encyption_key=app["secret_key"],
-                                data=copy.deepcopy(
-                                    params["value"]["data"]["func_kwargs"]
-                                ),
+                            params["value"]["data"]["func_kwargs"] = (
+                                encryption_handler.custom_data_encrypt(
+                                    encyption_key=app["secret_key"],
+                                    data=copy.deepcopy(
+                                        params["value"]["data"]["func_kwargs"]
+                                    ),
+                                )
                             )
 
                             self.producer_thread(
