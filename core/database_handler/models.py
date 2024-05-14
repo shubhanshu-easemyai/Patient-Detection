@@ -94,11 +94,14 @@ class DetectionLogs(Document):
     user_data = ReferenceField(UserInfo)
     object_metadata = DictField()
     roi_details = DictField()
+    object_id = StringField()
     image_url = StringField()
     image_height = IntField()
     image_width = IntField()
     created = DateTimeField(default=datetime.datetime.utcnow)
+    vanished = DateTimeField(null=True)
     area = StringField()
+    roi_name = StringField()
     meta = {
         "strict": False,
         "indexes": [
@@ -114,6 +117,7 @@ class DetectionLogs(Document):
         return {
             "source_name": self.source_details.source_name,
             "metadata": [{
+                "object_id": self.object_id,
                 "media_link": self.image_url,
                 "media_type":   "image",
                 "media_height": self.image_height,
@@ -130,5 +134,6 @@ class DetectionLogs(Document):
                     "bounding_box": _object_metadata,
                 }],
             }],
-            "created": "{}Z".format(self.created)
+            "created": "{}Z".format(self.created),
+            "vanished": "{}Z".format(self.vanished)
         } 

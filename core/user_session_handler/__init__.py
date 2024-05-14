@@ -49,7 +49,7 @@ class UserSessionHandler:
 
     def deactivate_session(self, session_id, user_data, **kwargs):
         try:
-            logger.debug(glb.user_sessions)
+            # logger.debug(glb.user_sessions)
             user_data = UserInfo.objects.get(user_id=user_data["user_id"])
             if user_data["user_id"] in glb.user_sessions:
                 if session_id in glb.user_sessions[user_data["user_id"]]:
